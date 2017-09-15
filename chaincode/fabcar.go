@@ -79,7 +79,9 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 	} else if function == "changeCarOwner" {
 		return s.changeCarOwner(APIstub, args)
 	}
-
+	} else if function == "QueryCarPrice" {
+		return s.QueryCarPrice(APIstub, args)
+	}
 	return shim.Error("Invalid Smart Contract function name.")
 }
 
@@ -95,16 +97,16 @@ func (s *SmartContract) queryCar(APIstub shim.ChaincodeStubInterface, args []str
 
 func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
 	cars := []Car{
-		Car{Make: "Toyota", Model: "Prius", Colour: "blue", Owner: "Tomoko"},
-		Car{Make: "Ford", Model: "Mustang", Colour: "red", Owner: "Brad"},
-		Car{Make: "Hyundai", Model: "Tucson", Colour: "green", Owner: "Jin Soo"},
-		Car{Make: "Volkswagen", Model: "Passat", Colour: "yellow", Owner: "Max"},
-		Car{Make: "Tesla", Model: "S", Colour: "black", Owner: "Adriana"},
-		Car{Make: "Peugeot", Model: "205", Colour: "purple", Owner: "Michel"},
-		Car{Make: "Chery", Model: "S22L", Colour: "white", Owner: "Aarav"},
-		Car{Make: "Fiat", Model: "Punto", Colour: "violet", Owner: "Pari"},
-		Car{Make: "Tata", Model: "Nano", Colour: "indigo", Owner: "Valeria"},
-		Car{Make: "Holden", Model: "Barina", Colour: "brown", Owner: "Shotaro"},
+		Car{Make: "Toyota", Model: "Prius", Colour: "blue", Owner: "Tomoko", Price: "1000"},
+		Car{Make: "Ford", Model: "Mustang", Colour: "red", Owner: "Brad", Price: "2000"},
+		Car{Make: "Hyundai", Model: "Tucson", Colour: "green", Owner: "Jin Soo", Price: "3000"},
+		Car{Make: "Volkswagen", Model: "Passat", Colour: "yellow", Owner: "Max", Price: "4000"},
+		Car{Make: "Tesla", Model: "S", Colour: "black", Owner: "Adriana", Price: "5000"},
+		Car{Make: "Peugeot", Model: "205", Colour: "purple", Owner: "Michel", Price: "6000"},
+		Car{Make: "Chery", Model: "S22L", Colour: "white", Owner: "Aarav", Price: "7000"},
+		Car{Make: "Fiat", Model: "Punto", Colour: "violet", Owner: "Pari", Price: "8000"},
+		Car{Make: "Tata", Model: "Nano", Colour: "indigo", Owner: "Valeria", Price: "9000"},
+		Car{Make: "Holden", Model: "Barina", Colour: "brown", Owner: "Shotaro", Price: "10000"},
 	}
 
 	i := 0
@@ -121,11 +123,11 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 
 func (s *SmartContract) createCar(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-	if len(args) != 5 {
+	if len(args) != 6 {
 		return shim.Error("Incorrect number of arguments. Expecting 5")
 	}
 
-	var car = Car{Make: args[1], Model: args[2], Colour: args[3], Owner: args[4]}
+	var car = Car{Make: args[1], Model: args[2], Colour: args[3], Owner: args[4], Price: args[5]}
 
 	carAsBytes, _ := json.Marshal(car)
 	APIstub.PutState(args[0], carAsBytes)
